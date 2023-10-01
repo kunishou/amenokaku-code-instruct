@@ -10,6 +10,213 @@
 ## HuggingFace
 https://huggingface.co/datasets/kunishou/amenokaku-code-instruct
 
+## データ例
+
+<details>
+<summary>データ例1（コード生成）</summary>
+
+```
+Instruction:
+  Pythonを用いて、renketsu.pngを4-連結数により、色分けせよ。
+  
+  4-連結数とは近傍との画素の状態を見る値である。
+  通常、近傍は注目画素x0(x,y)が0でない場合に対して、次のように定義される。
+  
+  x4(x-1,y-1) x3(x,y-1) x2(x+1,y-1)
+  x5(x-1,y)   x0(x,y)   x1(x+1,y)
+  x6(x-1,y+1) x7(x,y+1) x8(x+1,y+1)
+  
+  ここで4連結数とは、次式で計算される。
+  
+  S = (x1 - x1 x2 x3) + (x3 - x3 x4 x5) + (x5 - x5 x6 x7) + (x7 - x7 x8 x1) 
+  
+  S = [0,4]の範囲をとり、
+  - S = 0 は内部点
+  - S = 1 は端点
+  - S = 2 は連結点
+  - S = 3 は分岐点
+  - S = 4 は交差点
+  を示す。
+
+Output:
+
+  import cv2
+  import numpy as np
+  import matplotlib.pyplot as plt
+  
+  
+  # hilditch thining
+  def hilditch(img):
+      # get shape
+      H, W, C = img.shape
+  
+      # prepare out image
+      out = np.zeros((H, W), dtype=np.int)
+      out[img[..., 0] > 0] = 1
+  
+      # inverse pixel value
+      tmp = out.copy()
+      _tmp = 1 - tmp
+  
+      count = 1
+      while count > 0:
+          count = 0
+          tmp = out.copy()
+          _tmp = 1 - tmp
+  
+          tmp2 = out.copy()
+          _tmp2 = 1 - tmp2
+          
+          # each pixel
+          for y in range(H):
+              for x in range(W):
+                  # skip black pixel
+                  if out[y, x] < 1:
+                      continue
+                  
+                  judge = 0
+                  
+                  ## condition 1
+                  if (tmp[y, min(x+1, W-1)] * tmp[max(y-1,0 ), x] * tmp[y, max(x-1, 0)] * tmp[min(y+1, H-1), x]) == 0:
+                      judge += 1
+                      
+                  ## condition 2
+                  c = 0
+                  c += (_tmp[y, min(x+1, W-1)] - _tmp[y, min(x+1, W-1)] * _tmp[max(y-1, 0), min(x+1, W-1)] * _tmp[max(y-1, 0), x])
+                  c += (_tmp[max(y-1, 0), x] - _tmp[max(y-1, 0), x] * _tmp[max(y-1, 0), max(x-1, 0)] * _tmp[y, max(x-1, 0)])
+                  c += (_tmp[y, max(x-1, 0)] - _tmp[y, max(x-1, 0)] * _tmp[min(y+1, H-1), max(x-1, 0)] * _tmp[min(y+1, H-1), x])
+                  c += (_tmp[min(y+1, H-1), x] - _tmp[min(y+1, H-1), x] * _tmp[min(y+1, H-1), min(x+1, W-1)] * _tmp[y, min(x+1, W-1)])
+                  if c == 1:
+                      judge += 1
+                      
+                  ## condition 3
+                  if np.sum(tmp[max(y-1, 0) : min(y+2, H), max(x-1, 0) : min(x+2, W)]) >= 3:
+                      judge += 1
+  
+                  ## condition 4
+                  if np.sum(out[max(y-1, 0) : min(y+2, H), max(x-1, 0) : min(x+2, W)]) >= 2:
+                      judge += 1
+  
+                  ## condition 5
+                  _tmp2 = 1 - out
+  
+                  c = 0
+                  c += (_tmp2[y, min(x+1, W-1)] - _tmp2[y, min(x+1, W-1)] * _tmp2[max(y-1, 0), min(x+1, W-1)] * _tmp2[max(y-1, 0), x])
+                  c += (_tmp2[max(y-1, 0), x] - _tmp2[max(y-1, 0), x] * (1 - tmp[max(y-1, 0), max(x-1, 0)]) * _tmp2[y, max(x-1, 0)])
+                  c += (_tmp2[y, max(x-1, 0)] - _tmp2[y, max(x-1, 0)] * _tmp2[min(y+1, H-1), max(x-1, 0)] * _tmp2[min(y+1, H-1), x])
+                  c += (_tmp2[min(y+1, H-1), x] - _tmp2[min(y+1, H-1), x] * _tmp2[min(y+1, H-1), min(x+1, W-1)] * _tmp2[y, min(x+1, W-1)])
+                  if c == 1 or (out[max(y-1, 0), max(x-1,0 )] != tmp[max(y-1, 0), max(x-1, 0)]):
+                      judge += 1
+  
+                  c = 0
+                  c += (_tmp2[y, min(x+1, W-1)] - _tmp2[y, min(x+1, W-1)] * _tmp2[max(y-1, 0), min(x+1, W-1)] * (1 - tmp[max(y-1, 0), x]))
+                  c += ((1-tmp[max(y-1, 0), x]) - (1 - tmp[max(y-1, 0), x]) * _tmp2[max(y-1, 0), max(x-1, 0)] * _tmp2[y, max(x-1, 0)])
+                  c += (_tmp2[y, max(x-1,0 )] - _tmp2[y, max(x-1,0 )] * _tmp2[min(y+1, H-1), max(x-1, 0)] * _tmp2[min(y+1, H-1), x])
+                  c += (_tmp2[min(y+1, H-1), x] - _tmp2[min(y+1, H-1), x] * _tmp2[min(y+1, H-1), min(x+1, W-1)] * _tmp2[y, min(x+1, W-1)])
+                  if c == 1 or (out[max(y-1, 0), x] != tmp[max(y-1, 0), x]):
+                      judge += 1
+  
+                  c = 0
+                  c += (_tmp2[y, min(x+1, W-1)] - _tmp2[y, min(x+1, W-1)] * (1 - tmp[max(y-1, 0), min(x+1, W-1)]) * _tmp2[max(y-1, 0), x])
+                  c += (_tmp2[max(y-1, 0), x] - _tmp2[max(y-1, 0), x] * _tmp2[max(y-1, 0), max(x-1, 0)] * _tmp2[y, max(x-1, 0)])
+                  c += (_tmp2[y, max(x-1, 0)] - _tmp2[y, max(x-1, 0)] * _tmp2[min(y+1, H-1), max(x-1, 0)] * _tmp2[min(y+1, H-1), x])
+                  c += (_tmp2[min(y+1, H-1), x] - _tmp2[min(y+1, H-1), x] * _tmp2[min(y+1, H-1), min(x+1, W-1)] * _tmp2[y, min(x+1, W-1)])
+                  if c == 1 or (out[max(y-1, 0), min(x+1, W-1)] != tmp[max(y-1, 0), min(x+1, W-1)]):
+                      judge += 1
+  
+                  c = 0
+                  c += (_tmp2[y, min(x+1, W-1)] - _tmp2[y, min(x+1, W-1)] * _tmp2[max(y-1, 0), min(x+1, W-1)] * _tmp2[max(y-1, 0), x])
+                  c += (_tmp2[max(y-1, 0), x] - _tmp2[max(y-1, 0), x] * _tmp2[max(y-1, 0), max(x-1, 0)] * (1 - tmp[y, max(x-1, 0)]))
+                  c += ((1 - tmp[y, max(x-1, 0)]) - (1 - tmp[y, max(x-1, 0)]) * _tmp2[min(y+1, H-1), max(x-1, 0)] * _tmp2[min(y+1, H-1), x])
+                  c += (_tmp2[min(y+1, H-1), x] - _tmp2[min(y+1, H-1), x] * _tmp2[min(y+1, H-1), min(x+1, W-1)] * _tmp2[y, min(x+1, W-1)])
+                  if c == 1 or (out[y, max(x-1, 0)] != tmp[y, max(x-1, 0)]):
+                      judge += 1
+                  
+                  if judge >= 8:
+                      out[y, x] = 0
+                      count += 1
+                      
+      out = out.astype(np.uint8) * 255
+  
+      return out
+  
+  
+  # Read image
+  img = cv2.imread("gazo.png").astype(np.float32)
+  
+  # hilditch thining
+  out = hilditch(img)
+  
+  # Save result
+  cv2.imwrite("out.png", out)
+  cv2.imshow("result", out)
+  cv2.waitKey(0)
+  cv2.destroyAllWindows()
+
+```
+</details>
+
+<details>
+<summary>データ例2（コードの挙動確認）</summary>
+
+```
+Instruction:
+
+  次に示すのはJavaScriptのコードです。何が出力されるでしょうか？
+  
+  class Chameleon {
+    static colorChange(newColor) {
+      this.newColor = newColor;
+      return this.newColor;
+    }
+  
+    constructor({ newColor = "green" } = {}) {
+      this.newColor = newColor;
+    }
+  }
+  
+  const freddie = new Chameleon({ newColor: "purple" });
+  freddie.colorChange("orange");
+  
+Output:
+
+  答え：TypeError
+
+  colorChange関数は静的です。静的メソッドは、それらが作成されたコンストラクタ上でのみ動作するように設計されており、どの子達にも受け継がれません。 freddieは子となりますので、この関数は受け継がれず、freddieインスタンスでは利用できません。
+  その結果、TypeErrorが投げられます。
+
+```
+</details>
+
+<details>
+<summary>データ例3（コードのバグ修正）</summary>
+
+```
+# IndentationError
+
+Instruction:
+
+  次に示すpythonコードの誤りを修正しなさい。
+  
+  def : get_node_idx ( heap , node ) :
+      for idx , item in enumerate ( heap ) :
+          dist , n = item
+          if n == node :
+              return idx
+  return - 1
+  
+Output:
+
+  def get_node_idx ( heap , node ) :
+      for idx , item in enumerate ( heap ) :
+          dist , n = item
+          if n == node :
+              return idx
+      return - 1
+
+```
+</details>
+
 ## データセット詳細
 指示タスクの内訳としてはコード生成（code_generation）が1050レコード、コードの挙動確認（check_code_behavor）が150レコード、コードのバグ修正（code_fix）が4000レコードになります。
 詳細な内訳は以下の通りになります。
