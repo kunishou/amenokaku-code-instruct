@@ -19,6 +19,7 @@ https://huggingface.co/datasets/kunishou/amenokaku-code-instruct
 
 ```
 Instruction:
+
   Pythonを用いて、renketsu.pngを4-連結数により、色分けせよ。
   
   4-連結数とは近傍との画素の状態を見る値である。
