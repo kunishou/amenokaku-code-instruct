@@ -10,7 +10,9 @@
 ## HuggingFace
 https://huggingface.co/datasets/kunishou/amenokaku-code-instruct
 
-## データ例
+## データセット詳細
+指示タスクの内訳としてはコード生成（code_generation）が1050レコード、コードの挙動確認（check_code_behavor）が150レコード、コードのバグ修正（code_fix）が4000レコードになります。
+詳細な内訳は下表の通りになります。
 
 <details>
 <summary>データ例1（コード生成）</summary>
@@ -217,9 +219,6 @@ Output:
 ```
 </details>
 
-## データセット詳細
-指示タスクの内訳としてはコード生成（code_generation）が1050レコード、コードの挙動確認（check_code_behavor）が150レコード、コードのバグ修正（code_fix）が4000レコードになります。
-詳細な内訳は以下の通りになります。
 |source name|num record|liscence|url|
 |:----|:----|:----|:----|
 |データサイエンス100本ノック（構造化データ加工編）（Python解答）|100|[MIT](https://github.com/The-Japan-DataScientist-Society/100knocks-preprocess/blob/master/LICENSE)|https://github.com/The-Japan-DataScientist-Society/100knocks-preprocess|
