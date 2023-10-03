@@ -233,7 +233,7 @@ Output:
 |自作Python100本ノック|100|AmenokakuCode Liscence|https://qiita.com/ahpjop/items/373f807d68044cda1c9b|
 |Python-for-Beginners-Solve-50-Exercises-Live|50|[MIT](https://github.com/garg10may/Python-for-Beginners-Solve-50-Exercises-Live/blob/master/LICENSE)|https://github.com/garg10may/Python-for-Beginners-Solve-50-Exercises-Live|
 |R初学者のためのtidyverse100本ノック|100|AmenokakuCode Liscence|https://qiita.com/nekobo/items/cbf32a13637273f229da|
-|JavaScripu Questions|155|[MIT](https://github.com/lydiahallie/javascript-questions/blob/master/LICENSE)|https://github.com/lydiahallie/javascript-questions|
+|JavaScript Questions|155|[MIT](https://github.com/lydiahallie/javascript-questions/blob/master/LICENSE)|https://github.com/lydiahallie/javascript-questions|
 |Break-It-Fix-It|4,000|[MIT](https://github.com/michiyasunaga/BIFI/blob/main/LICENSE)|https://github.com/michiyasunaga/BIFI|
 
 ※ 私が過去に作成した学習コンテンツです。
