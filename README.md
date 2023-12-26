@@ -1,6 +1,6 @@
 <img src="https://github.com/kunishou/amenokaku-code-instruct/blob/main/image/amenokaku.png" alt="amenokaku_code">
 
-# AmenokakuCode-instruct
+# Amenokaku-Code-instruct
 
 ## 概要
 - コードタスクに特化した5.2KのInstructionデータセットです。
