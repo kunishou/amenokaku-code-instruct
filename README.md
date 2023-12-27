@@ -2,6 +2,10 @@
 
 # Amenokaku-Code-instruct
 
+**Update:**  
+- 2023/12/27  
+データセットに JaxTon , プロになるJava のデータ 120 レコードを追加しました。 
+
 ## 概要
 - コードタスクに特化した5.2KのInstructionデータセットです。
 - データセットに含まれるデータは商用利用できるラインセンスが付与されたプログラミング学習コンテンツから収集、加工し作成しました（英語のコンテンツは日本語に自動翻訳し、翻訳の不自然な箇所を手動で修正）。
@@ -235,6 +239,8 @@ Output:
 |R初学者のためのtidyverse100本ノック|100|AmenokakuCode Liscence|https://qiita.com/nekobo/items/cbf32a13637273f229da|
 |JavaScript Questions|155|[MIT](https://github.com/lydiahallie/javascript-questions/blob/master/LICENSE)|https://github.com/lydiahallie/javascript-questions|
 |Break-It-Fix-It|4,000|[MIT](https://github.com/michiyasunaga/BIFI/blob/main/LICENSE)|https://github.com/michiyasunaga/BIFI|
+|JaxTon|60|Apache-2.0|https://github.com/vopani/jaxton|
+|プロになるJava|120|AmenokakuCode Liscence|https://nowokay.hatenablog.com/entry/projava17exercise2|
 
 ※ 私が過去に作成した学習コンテンツです。
 
