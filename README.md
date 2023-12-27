@@ -1,10 +1,10 @@
 <img src="https://github.com/kunishou/amenokaku-code-instruct/blob/main/image/amenokaku.png" alt="amenokaku_code">
 
-# Amenokaku-Code-instruct
+# Amenokaku-Code-Instruct
 
 **Update:**  
 - 2023/12/27  
-データセットに JaxTon , プロになるJava のデータ 120 レコードを追加しました。 
+データセットに JaxTon , プロになるJava のコードデータ 180 レコードを追加しました。 
 
 ## 概要
 - コードタスクに特化した5.2KのInstructionデータセットです。
